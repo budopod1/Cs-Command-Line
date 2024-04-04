@@ -8,6 +8,7 @@ public class ArgumentParser {
     SwitchableDeque<Expectation> expected = new SwitchableDeque<Expectation>(false);
     Dictionary<string, Expectation> options = new Dictionary<string, Expectation>();
     List<(string, string, string[])> optionHelp = new List<(string, string, string[])>();
+    List<IEnumerable<Expectation>> usages = new List<IEnumerable<Expectation>>();
 
     public int OptionUsagePadding = 45;
 
@@ -22,20 +23,32 @@ public class ArgumentParser {
         Console.WriteLine("Use '--help' to view usage");
         Environment.Exit(1);
     }
-    
-    public void ShowHelp() {
-        Console.WriteLine(description);
-        Console.WriteLine();
+
+    public void AddUsageOption(IEnumerable<Expectation> usage) {
+        usages.Add(usage);
+    }
+
+    public void AddDefaultUsage() {
+        usages.Add(expected);
+    }
+
+    void ShowUsageHelp() {
         Console.WriteLine("Usage:");
-        Console.Write(cmdName + " [options] ");
-        foreach (Expectation expectation in expected) {
-            if (expectation.IsEmpty()) continue;
-            string help = expectation.GetHelp();
-            if (expectation.IsOptional()) help = $"[{help}]";
-            Console.Write(help + " ");
+        foreach (IEnumerable<Expectation> usage in usages) {
+            Console.Write(cmdName + " ");
+            if (options.Count > 0) Console.Write("[options] ");
+            foreach (Expectation expectation in usage) {
+                if (expectation.IsEmpty()) continue;
+                string help = expectation.GetHelp();
+                if (expectation.IsOptional()) help = $"[{help}]";
+                Console.Write(help + " ");
+            }
+            Console.WriteLine();
         }
         Console.WriteLine();
-        Console.WriteLine();
+    }
+
+    void ShowOptionHelp() {
         Console.WriteLine("Options:");
         foreach ((string help, string expected, string[] names) in optionHelp) {
             bool first = true;
@@ -53,6 +66,17 @@ public class ArgumentParser {
             Console.Write(optionUsage.PadRight(OptionUsagePadding));
             Console.Write(" " + help);
             Console.WriteLine();
+        }
+    }
+    
+    public void ShowHelp() {
+        Console.WriteLine(description);
+        Console.WriteLine();
+        if (usages.Count > 0) {
+            ShowUsageHelp();
+        }
+        if (optionHelp.Count > 0) {
+            ShowOptionHelp();
         }
         Environment.Exit(0);
     }
