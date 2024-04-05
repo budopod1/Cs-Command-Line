@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class ArgumentParser {
     string cmdName;
     string description;
-    SwitchableDeque<Expectation> expected = new SwitchableDeque<Expectation>(false);
+    LinkedList<Expectation> expected = new LinkedList<Expectation>();
     Dictionary<string, Expectation> options = new Dictionary<string, Expectation>();
     List<(string, string, string[])> optionHelp = new List<(string, string, string[])>();
     List<IEnumerable<Expectation>> usages = new List<IEnumerable<Expectation>>();
@@ -25,6 +25,10 @@ public class ArgumentParser {
     }
 
     public void AddUsageOption(IEnumerable<Expectation> usage) {
+        usages.Add(usage);
+    }
+
+    public void AddUsageOption(params Expectation[] usage) {
         usages.Add(usage);
     }
 
@@ -82,8 +86,14 @@ public class ArgumentParser {
     }
 
     public T Expect<T>(T expectation) where T : Expectation {
-        expected.Add(expectation);
+        expected.AddLast(expectation);
         return expectation;
+    }
+
+    public void Expect(params Expectation[] expectations) {
+        foreach (Expectation expectation in expectations) {
+            expected.AddLast(expectation);
+        }
     }
 
     public T AddOption<T>(T expectation, string help, params string[] names) where T : Expectation {
@@ -107,11 +117,10 @@ public class ArgumentParser {
         if (!options.ContainsKey(option)) {
             DisplayProblem($"Unknown option {JSONTools.ToLiteral(option)}");
         }
-        Expect(options[option]);
+        expected.AddFirst(options[option]);
     }
 
     public void Parse(string[] args) {
-        expected.ToStack();
         bool positionalOnly = false;
         foreach (string arg in args) {
             if (arg == "--") {
@@ -137,7 +146,8 @@ public class ArgumentParser {
                 if (expected.Count == 0) {
                     DisplayProblem($"To many parameters: {JSONTools.ToLiteral(arg)}");
                 }
-                Expectation expectation = expected.Pop();
+                Expectation expectation = expected.First.Value;
+                expected.RemoveFirst();
                 expectation.IsPresent = true;
                 if (expectation.IsEmpty()) {
                     expectation.RunThens();
@@ -145,10 +155,8 @@ public class ArgumentParser {
                 }
                 bool matches = expectation.Matches(arg);
                 if (!matches) {
-                    if (!expectation.IsOptional()) {
-                        DisplayProblem("Expected " + expectation.GetHelp());
-                    }
-                    continue;
+                    if (expectation.IsOptional()) continue;
+                    DisplayProblem("Expected " + expectation.GetHelp());
                 }
                 expectation.Matched = arg;
                 expectation.RunThens();
@@ -157,7 +165,8 @@ public class ArgumentParser {
         }
 
         while (expected.Count > 0) {
-            Expectation expectation = expected.Pop();
+            Expectation expectation = expected.First.Value;
+            expected.RemoveFirst();
             if (expectation.IsEmpty() || expectation.IsOptional()) {
                 expectation.IsPresent = true;
                 expectation.RunThens();
