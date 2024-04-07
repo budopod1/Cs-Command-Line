@@ -7,8 +7,8 @@ public class ArgumentParser {
     string description;
     LinkedList<Expectation> expected = new LinkedList<Expectation>();
     Dictionary<string, Expectation> options = new Dictionary<string, Expectation>();
-    List<(string, string, string[])> optionHelp = new List<(string, string, string[])>();
-    List<IEnumerable<Expectation>> usages = new List<IEnumerable<Expectation>>();
+    List<OptionHelp> optionHelp = new List<OptionHelp>();
+    List<IEnumerable<WithCmdUsage>> usages = new List<IEnumerable<WithCmdUsage>>();
 
     public int OptionUsagePadding = 45;
 
@@ -24,11 +24,11 @@ public class ArgumentParser {
         Environment.Exit(1);
     }
 
-    public void AddUsageOption(IEnumerable<Expectation> usage) {
+    public void AddUsageOption(IEnumerable<WithCmdUsage> usage) {
         usages.Add(usage);
     }
 
-    public void AddUsageOption(params Expectation[] usage) {
+    public void AddUsageOption(params WithCmdUsage[] usage) {
         usages.Add(usage);
     }
 
@@ -38,13 +38,12 @@ public class ArgumentParser {
 
     void ShowUsageHelp() {
         Console.WriteLine("Usage:");
-        foreach (IEnumerable<Expectation> usage in usages) {
+        foreach (IEnumerable<WithCmdUsage> usage in usages) {
             Console.Write(cmdName + " ");
             if (options.Count > 0) Console.Write("[options] ");
-            foreach (Expectation expectation in usage) {
-                if (expectation.IsEmpty()) continue;
-                string help = expectation.GetHelp();
-                if (expectation.IsOptional()) help = $"[{help}]";
+            foreach (WithCmdUsage wusage in usage) {
+                string help = wusage.GetHelp();
+                if (help.Length == 0) continue;
                 Console.Write(help + " ");
             }
             Console.WriteLine();
@@ -54,10 +53,10 @@ public class ArgumentParser {
 
     void ShowOptionHelp() {
         Console.WriteLine("Options:");
-        foreach ((string help, string expected, string[] names) in optionHelp) {
+        foreach (OptionHelp help in optionHelp) {
             bool first = true;
             string optionUsage = "";
-            foreach (string name in names) {
+            foreach (string name in help.Names) {
                 if (!first) optionUsage += ", ";
                 first = false;
                 if (name.Length == 1) {
@@ -66,9 +65,9 @@ public class ArgumentParser {
                     optionUsage += "--"+name;
                 }
             }
-            if (expected != "") optionUsage += " "+expected;
+            if (help.Expected != "") optionUsage += " "+help.Expected;
             Console.Write(optionUsage.PadRight(OptionUsagePadding));
-            Console.Write(" " + help);
+            Console.Write(" " + help.Help);
             Console.WriteLine();
         }
     }
@@ -97,7 +96,7 @@ public class ArgumentParser {
     }
 
     public T AddOption<T>(T expectation, string help, params string[] names) where T : Expectation {
-        optionHelp.Add((help, expectation.GetHelp(), names));
+        optionHelp.Add(new OptionHelp(help, expectation.GetHelp(), names));
         foreach (string name in names) {
             options[name] = expectation;
         }
@@ -105,7 +104,7 @@ public class ArgumentParser {
     }
 
     public ActionExpectation AddOption(Action action, string help, params string[] names) {
-        optionHelp.Add((help, "", names));
+        optionHelp.Add(new OptionHelp(help, "", names));
         ActionExpectation expectation = new ActionExpectation(action);
         foreach (string name in names) {
             options[name] = expectation;

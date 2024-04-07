@@ -18,6 +18,10 @@ public class PossibilitiesExpectation : Expectation {
         return "<"+String.Join(" | ", options)+">";
     }
 
+    public CmdUsagePart Usage(string possibility) {
+        return new CmdUsagePart(possibility);
+    }
+
     public string Value() {
         if (Matched == null || Matched == "") return default_;
         return Matched;
