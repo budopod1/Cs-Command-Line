@@ -155,7 +155,7 @@ public class ArgumentParser {
                 bool matches = expectation.Matches(arg);
                 if (!matches) {
                     if (expectation.IsOptional()) continue;
-                    DisplayProblem("Expected " + expectation.GetHelp());
+                    DisplayProblem($"Expected {expectation.GetHelp()}, found {arg}");
                 }
                 expectation.Matched = arg;
                 expectation.RunThens();
@@ -171,7 +171,7 @@ public class ArgumentParser {
                 expectation.RunThens();
                 continue;
             }
-            DisplayProblem("Expected " + expectation.GetHelp());
+            DisplayProblem("Expected another parameter: " + expectation.GetHelp());
         }
     }
 }
