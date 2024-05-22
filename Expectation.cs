@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 public abstract class Expectation : WithCmdUsage {
-    public string Matched = null;
+    public virtual string Matched { get; set; }
     public bool IsPresent = false;
     List<Action> thens = new List<Action>();
     
@@ -12,7 +12,7 @@ public abstract class Expectation : WithCmdUsage {
     
     protected virtual string _GetHelp() {return "";}
     
-    public sealed override string GetHelp() {
+    public override string GetHelp() {
         string help = _GetHelp();
         if (help == "") return "";
         if (IsOptional()) help = $"[{help}]";

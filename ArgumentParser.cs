@@ -6,22 +6,31 @@ public class ArgumentParser {
     string cmdName;
     string description;
     LinkedList<Expectation> expected = new LinkedList<Expectation>();
-    Dictionary<string, Expectation> options = new Dictionary<string, Expectation>();
+    Dictionary<string, Action> options = new Dictionary<string, Action>();
     List<OptionHelp> optionHelp = new List<OptionHelp>();
     List<IEnumerable<WithCmdUsage>> usages = new List<IEnumerable<WithCmdUsage>>();
+    bool exitOnProblem = true;
 
     public int OptionUsagePadding = 45;
 
     public ArgumentParser(string cmdName, string description) {
         this.cmdName = cmdName;
         this.description = description;
-        AddOption(ShowHelp, "Show this text and exit", "h", "help");
+        AddOption(ShowHelp, "Show this text and exit", null, "h", "help");
     }
 
-    public void DisplayProblem(string problem) {
+    public static void DisplayProblem(string problem) {
         Console.WriteLine("Epsilon: "+problem);
         Console.WriteLine("Use '--help' to view usage");
         Environment.Exit(1);
+    }
+
+    void parsingProblem(string problem) {
+        if (exitOnProblem) {
+            DisplayProblem(problem);
+        } else {
+            throw new ParseProblemException(problem);
+        }
     }
 
     public void AddUsageOption(IEnumerable<WithCmdUsage> usage) {
@@ -84,6 +93,11 @@ public class ArgumentParser {
         Environment.Exit(0);
     }
 
+    public T ExpectFirst<T>(T expectation) where T : Expectation {
+        expected.AddFirst(expectation);
+        return expectation;
+    }
+
     public T Expect<T>(T expectation) where T : Expectation {
         expected.AddLast(expectation);
         return expectation;
@@ -96,27 +110,22 @@ public class ArgumentParser {
     }
 
     public T AddOption<T>(T expectation, string help, params string[] names) where T : Expectation {
-        optionHelp.Add(new OptionHelp(help, expectation.GetHelp(), names));
-        foreach (string name in names) {
-            options[name] = expectation;
-        }
+        AddOption(() => ExpectFirst(expectation), help, expectation.GetHelp(), names);
         return expectation;
     }
 
-    public ActionExpectation AddOption(Action action, string help, params string[] names) {
-        optionHelp.Add(new OptionHelp(help, "", names));
-        ActionExpectation expectation = new ActionExpectation(action);
+    public void AddOption(Action action, string help, string expected, params string[] names) {
+        optionHelp.Add(new OptionHelp(help, expected ?? "", names));
         foreach (string name in names) {
-            options[name] = expectation;
+            options[name] = action;
         }
-        return expectation;
     }
 
     public void UseOption(string option) {
         if (!options.ContainsKey(option)) {
-            DisplayProblem($"Unknown option {JSONTools.ToLiteral(option)}");
+            parsingProblem($"Unknown option {JSONTools.ToLiteral(option)}");
         }
-        expected.AddFirst(options[option]);
+        options[option]();
     }
 
     public void Parse(string[] args) {
@@ -143,7 +152,7 @@ public class ArgumentParser {
 
             while (true) {
                 if (expected.Count == 0) {
-                    DisplayProblem($"To many parameters: {JSONTools.ToLiteral(arg)}");
+                    parsingProblem($"To many parameters: {JSONTools.ToLiteral(arg)}");
                 }
                 Expectation expectation = expected.First.Value;
                 expected.RemoveFirst();
@@ -155,7 +164,7 @@ public class ArgumentParser {
                 bool matches = expectation.Matches(arg);
                 if (!matches) {
                     if (expectation.IsOptional()) continue;
-                    DisplayProblem($"Expected {expectation.GetHelp()}, found {arg}");
+                    parsingProblem($"Expected {expectation.GetHelp()}, found {arg}");
                 }
                 expectation.Matched = arg;
                 expectation.RunThens();
@@ -167,11 +176,16 @@ public class ArgumentParser {
             Expectation expectation = expected.First.Value;
             expected.RemoveFirst();
             if (expectation.IsEmpty() || expectation.IsOptional()) {
-                expectation.IsPresent = true;
-                expectation.RunThens();
                 continue;
             }
-            DisplayProblem("Expected another parameter: " + expectation.GetHelp());
+            parsingProblem("Expected another parameter: " + expectation.GetHelp());
         }
+    }
+
+    public void ParseAdditionalOptions(IEnumerable<string> options) {
+        expected = new LinkedList<Expectation>();
+        exitOnProblem = false;
+        
+        Parse(options.ToArray());
     }
 }
