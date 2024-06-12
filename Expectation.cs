@@ -5,7 +5,8 @@ public abstract class Expectation : WithCmdUsage {
     public virtual string Matched { get; set; }
     public bool IsPresent = false;
     List<Action> thens = new List<Action>();
-    
+
+    public virtual void Before() {}
     public virtual bool Matches(string word) {return false;}
     public abstract bool IsOptional();
     public abstract bool IsEmpty();
