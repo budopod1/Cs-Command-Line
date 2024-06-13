@@ -194,6 +194,7 @@ public class ArgumentParser {
     public void ParseAdditionalOptions(IEnumerable<string> options) {
         expected = new LinkedList<Expectation>();
         exitOnProblem = false;
+        CurrentlyParseOptions = true;
         
         Parse(options.ToArray());
     }
