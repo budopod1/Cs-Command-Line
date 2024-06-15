@@ -6,7 +6,7 @@ public abstract class Expectation : WithCmdUsage {
     public bool IsPresent = false;
     List<Action> thens = new List<Action>();
 
-    public virtual void Before() {}
+    public virtual bool ShouldParseOption() {return true;}
     public virtual bool Matches(string word) {return false;}
     public abstract bool IsOptional();
     public abstract bool IsEmpty();

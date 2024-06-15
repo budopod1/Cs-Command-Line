@@ -11,8 +11,6 @@ public class ArgumentParser {
     List<IEnumerable<WithCmdUsage>> usages = new List<IEnumerable<WithCmdUsage>>();
     bool exitOnProblem = true;
 
-    public bool CurrentlyParseOptions = true;
-
     public int OptionUsagePadding = 45;
 
     public ArgumentParser(string cmdName, string description) {
@@ -138,13 +136,12 @@ public class ArgumentParser {
                 continue;
             }
 
-            Expectation expectation = null;
+            bool currentlyParseOptions = true;
             if (expected.Count > 0) {
-                expectation = expected.First.Value;
-                expectation.Before();
+                currentlyParseOptions = expected.First.Value.ShouldParseOption();
             }
             
-            if (!positionalOnly && CurrentlyParseOptions
+            if (!positionalOnly && currentlyParseOptions
                 && arg.Length >= 2 && arg[0] == '-') {
                 if (arg[1] == '-') {
                     string option = arg.Substring(2);
@@ -160,7 +157,7 @@ public class ArgumentParser {
             }
 
             while (true) {
-                expectation = expected.First.Value;
+                Expectation expectation = expected.First.Value;
                 if (expected.Count == 0) {
                     parsingProblem($"To many parameters: {JSONTools.ToLiteral(arg)}");
                 }
@@ -194,7 +191,6 @@ public class ArgumentParser {
     public void ParseAdditionalOptions(IEnumerable<string> options) {
         expected = new LinkedList<Expectation>();
         exitOnProblem = false;
-        CurrentlyParseOptions = true;
         
         Parse(options.ToArray());
     }
