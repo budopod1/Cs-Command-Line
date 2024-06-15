@@ -30,7 +30,10 @@ public class MultiInputExpectation : Expectation {
     public override bool Matches(string word) {return true;}
     public override bool IsOptional() {return !needsNext;}
     public override bool IsEmpty() {return false;}
+
     public override string GetHelp() {
-        return $"{(isOptional ? $"[{help}]" : help)}...";
+        string wrapped = $"<{help}>";
+        if (isOptional) wrapped = $"[{wrapped}]";
+        return $"{wrapped}...";
     }
 }
