@@ -157,10 +157,10 @@ public class ArgumentParser {
             }
 
             while (true) {
-                Expectation expectation = expected.First.Value;
                 if (expected.Count == 0) {
                     parsingProblem($"To many parameters: {JSONTools.ToLiteral(arg)}");
                 }
+                Expectation expectation = expected.First.Value;
                 expected.RemoveFirst();
                 expectation.IsPresent = true;
                 if (expectation.IsEmpty()) {
