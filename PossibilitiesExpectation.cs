@@ -6,8 +6,8 @@ public class PossibilitiesExpectation : Expectation {
     string default_;
     List<string> options;
 
-    public PossibilitiesExpectation(params string[] options) {
-        default_ = options[0];
+    public PossibilitiesExpectation(string default_, params string[] options) {
+        this.default_ = default_;
         this.options = options.ToList();
     }
 
