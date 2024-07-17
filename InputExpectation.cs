@@ -8,7 +8,7 @@ public class InputExpectation : Expectation {
         this.optional = optional;
         this.help = help;
     }
-    
+
     public override bool Matches(string word) {return true;}
     public override bool IsOptional() {return optional;}
     public override bool IsEmpty() {return false;}

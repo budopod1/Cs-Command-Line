@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class MultiInputExpectation : Expectation {
     public List<string> MatchedSegments = new List<string>();
-    public override string Matched { 
-        set => MatchedSegments.Add(value); 
+    public override string Matched {
+        set => MatchedSegments.Add(value);
         get => MatchedSegments.Last();
     }
     ArgumentParser parser;

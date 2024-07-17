@@ -3,7 +3,7 @@ using System;
 public class KeywordExpectation : Expectation {
     string keyword;
     bool isOptional;
-    
+
     public KeywordExpectation(string keyword, bool isOptional=false) {
         this.keyword = keyword;
         this.isOptional = isOptional;

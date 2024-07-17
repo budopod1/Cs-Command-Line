@@ -80,7 +80,7 @@ public class ArgumentParser {
             Console.WriteLine();
         }
     }
-    
+
     public void ShowHelp() {
         Console.WriteLine(description);
         Console.WriteLine();
@@ -140,7 +140,7 @@ public class ArgumentParser {
             if (expected.Count > 0) {
                 currentlyParseOptions = expected.First.Value.ShouldParseOption();
             }
-            
+
             if (!positionalOnly && currentlyParseOptions
                 && arg.Length >= 2 && arg[0] == '-') {
                 if (arg[1] == '-') {
@@ -191,7 +191,7 @@ public class ArgumentParser {
     public void ParseAdditionalOptions(IEnumerable<string> options) {
         expected = new LinkedList<Expectation>();
         exitOnProblem = false;
-        
+
         Parse(options.ToArray());
     }
 }

@@ -10,9 +10,9 @@ public abstract class Expectation : WithCmdUsage {
     public virtual bool Matches(string word) {return false;}
     public abstract bool IsOptional();
     public abstract bool IsEmpty();
-    
+
     protected virtual string _GetHelp() {return "";}
-    
+
     public override string GetHelp() {
         string help = _GetHelp();
         if (help == "") return "";

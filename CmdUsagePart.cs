@@ -6,6 +6,6 @@ public class CmdUsagePart : WithCmdUsage {
     public CmdUsagePart(string usage) {
         this.usage = usage;
     }
-    
+
     public override string GetHelp() {return usage;}
 }

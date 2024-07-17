@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class DelimitedInputExpectation : Expectation {
     public List<string> MatchedSegments = new List<string>();
-    public override string Matched { 
-        set => MatchedSegments.Add(value); 
+    public override string Matched {
+        set => MatchedSegments.Add(value);
         get => MatchedSegments.Last();
     }
     ArgumentParser parser;
@@ -34,7 +34,7 @@ public class DelimitedInputExpectation : Expectation {
     public override bool Matches(string word) {return true;}
     public override bool IsOptional() {return !needsNext;}
     public override bool IsEmpty() {return false;}
-    
+
     public override string GetHelp() {
         string wrapped = $"<{help}>";
         if (isOptional) wrapped = $"[{wrapped}]";

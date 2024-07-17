@@ -4,9 +4,9 @@ public class CaptureExpectation : Expectation {
     Action<string> action;
     bool optional;
     string help;
-    
-    public override string Matched { 
-        set => action(value); 
+
+    public override string Matched {
+        set => action(value);
         get => null;
     }
 
