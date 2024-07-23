@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Collections.Generic;
 
 public class ArgumentParser {
@@ -64,18 +65,23 @@ public class ArgumentParser {
         Console.WriteLine("Options:");
         foreach (OptionHelp help in optionHelp) {
             bool first = true;
-            string optionUsage = "";
+            StringBuilder optionUsage = new StringBuilder();
             foreach (string name in help.Names) {
-                if (!first) optionUsage += ", ";
+                if (!first) optionUsage.Append(", ");
                 first = false;
                 if (name.Length == 1) {
-                    optionUsage += "-"+name;
+                    optionUsage.Append('-');
+                    optionUsage.Append(name);
                 } else {
-                    optionUsage += "--"+name;
+                    optionUsage.Append("--");
+                    optionUsage.Append(name);
                 }
             }
-            if (help.Expected != "") optionUsage += " "+help.Expected;
-            Console.Write(optionUsage.PadRight(OptionUsagePadding));
+            if (help.Expected != "") {
+                optionUsage.Append(' ');
+                optionUsage.Append(help.Expected);
+            }
+            Console.Write(optionUsage.ToString().PadRight(OptionUsagePadding));
             Console.Write(" " + help.Help);
             Console.WriteLine();
         }
