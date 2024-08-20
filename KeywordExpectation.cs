@@ -1,13 +1,8 @@
 using System;
 
-public class KeywordExpectation : Expectation {
-    string keyword;
-    bool isOptional;
-
-    public KeywordExpectation(string keyword, bool isOptional=false) {
-        this.keyword = keyword;
-        this.isOptional = isOptional;
-    }
+public class KeywordExpectation(string keyword, bool isOptional = false) : Expectation {
+    readonly string keyword = keyword;
+    readonly bool isOptional = isOptional;
 
     public override bool Matches(string word) {return keyword == word;}
     public override bool IsOptional() {return isOptional;}

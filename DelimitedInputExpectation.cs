@@ -3,21 +3,21 @@ using System.Linq;
 using System.Collections.Generic;
 
 public class DelimitedInputExpectation : Expectation {
-    public List<string> MatchedSegments = new List<string>();
+    public List<string> MatchedSegments = [];
     public override string Matched {
         set => MatchedSegments.Add(value);
         get => MatchedSegments.Last();
     }
-    ArgumentParser parser;
-    bool isOptional;
+    readonly ArgumentParser parser;
+    readonly bool isOptional;
     bool needsNext;
-    string help;
-    string delimiter;
+    readonly string help;
+    readonly string delimiter;
 
     public DelimitedInputExpectation(ArgumentParser parser, string help, string delimiter, bool needsOne=false) {
         this.parser = parser;
-        this.isOptional = !needsOne;
-        this.needsNext = needsOne;
+        isOptional = !needsOne;
+        needsNext = needsOne;
         this.help = help;
         this.delimiter = delimiter;
         Then(() => {

@@ -3,8 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 
 public class PossibilitiesExpectation : Expectation {
-    string default_;
-    List<string> options;
+    readonly string default_;
+    readonly List<string> options;
 
     public PossibilitiesExpectation(string default_, params string[] options) {
         this.default_ = default_;

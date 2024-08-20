@@ -1,11 +1,7 @@
 using System;
 
-public class CmdUsagePart : WithCmdUsage {
-    string usage;
-
-    public CmdUsagePart(string usage) {
-        this.usage = usage;
-    }
+public class CmdUsagePart(string usage) : WithCmdUsage {
+    readonly string usage = usage;
 
     public override string GetHelp() {return usage;}
 }

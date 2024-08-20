@@ -1,19 +1,13 @@
 using System;
 
-public class CaptureExpectation : Expectation {
-    Action<string> action;
-    bool optional;
-    string help;
+public class CaptureExpectation(Action<string> action, string help, bool optional = false) : Expectation {
+    readonly Action<string> action = action;
+    readonly bool optional = optional;
+    readonly string help = help;
 
     public override string Matched {
         set => action(value);
         get => null;
-    }
-
-    public CaptureExpectation(Action<string> action, string help, bool optional=false) {
-        this.action = action;
-        this.optional = optional;
-        this.help = help;
     }
 
     public override bool ShouldParseOption() {return false;}

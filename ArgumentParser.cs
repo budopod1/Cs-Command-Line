@@ -4,12 +4,12 @@ using System.Text;
 using System.Collections.Generic;
 
 public class ArgumentParser {
-    string cmdName;
-    string description;
-    LinkedList<Expectation> expected = new LinkedList<Expectation>();
-    Dictionary<string, Action> options = new Dictionary<string, Action>();
-    List<OptionHelp> optionHelp = new List<OptionHelp>();
-    List<IEnumerable<WithCmdUsage>> usages = new List<IEnumerable<WithCmdUsage>>();
+    readonly string cmdName;
+    readonly string description;
+    LinkedList<Expectation> expected = new();
+    readonly Dictionary<string, Action> options = [];
+    readonly List<OptionHelp> optionHelp = [];
+    readonly List<IEnumerable<WithCmdUsage>> usages = [];
     bool exitOnProblem = true;
 
     public int OptionUsagePadding = 45;
@@ -65,7 +65,7 @@ public class ArgumentParser {
         Console.WriteLine("Options:");
         foreach (OptionHelp help in optionHelp) {
             bool first = true;
-            StringBuilder optionUsage = new StringBuilder();
+            StringBuilder optionUsage = new();
             foreach (string name in help.Names) {
                 if (!first) optionUsage.Append(", ");
                 first = false;
@@ -150,10 +150,10 @@ public class ArgumentParser {
             if (!positionalOnly && currentlyParseOptions
                 && arg.Length >= 2 && arg[0] == '-') {
                 if (arg[1] == '-') {
-                    string option = arg.Substring(2);
+                    string option = arg[2..];
                     UseOption(option);
                 } else {
-                    string sliced = arg.Substring(1);
+                    string sliced = arg[1..];
                     foreach (char chr in sliced) {
                         string option = chr.ToString();
                         UseOption(option);

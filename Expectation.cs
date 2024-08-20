@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public abstract class Expectation : WithCmdUsage {
     public virtual string Matched { get; set; }
     public bool IsPresent = false;
-    List<Action> thens = new List<Action>();
+    readonly List<Action> thens = [];
 
     public virtual bool ShouldParseOption() {return true;}
     public virtual bool Matches(string word) {return false;}

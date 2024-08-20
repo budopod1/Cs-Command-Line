@@ -3,20 +3,18 @@ using System.Linq;
 using System.Collections.Generic;
 
 public class MultiInputExpectation : Expectation {
-    public List<string> MatchedSegments = new List<string>();
+    public List<string> MatchedSegments = [];
     public override string Matched {
         set => MatchedSegments.Add(value);
         get => MatchedSegments.Last();
     }
-    ArgumentParser parser;
-    bool isOptional;
+    readonly bool isOptional;
     bool needsNext;
-    string help;
+    readonly string help;
 
     public MultiInputExpectation(ArgumentParser parser, string help, bool needsOne=false) {
-        this.parser = parser;
-        this.isOptional = !needsOne;
-        this.needsNext = needsOne;
+        isOptional = !needsOne;
+        needsNext = needsOne;
         this.help = help;
         Then(() => {
             needsNext = false;
