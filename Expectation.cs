@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 public abstract class Expectation : WithCmdUsage {
     public virtual string Matched { get; set; }
     public bool IsPresent = false;

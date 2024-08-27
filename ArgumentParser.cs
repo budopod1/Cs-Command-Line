@@ -1,7 +1,4 @@
-using System;
-using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 
 public class ArgumentParser {
     readonly string cmdName;

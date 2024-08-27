@@ -1,5 +1,3 @@
-using System;
-
 public class CaptureExpectation(Action<string> action, string help, bool optional = false) : Expectation {
     readonly Action<string> action = action;
     readonly bool optional = optional;

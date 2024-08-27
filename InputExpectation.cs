@@ -1,5 +1,3 @@
-using System;
-
 public class InputExpectation(string help, bool optional = false) : Expectation {
     readonly bool optional = optional;
     readonly string help = help;

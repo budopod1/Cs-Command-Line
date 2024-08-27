@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 public class PossibilitiesExpectation : Expectation {
     readonly string default_;
     readonly List<string> options;
@@ -24,7 +20,7 @@ public class PossibilitiesExpectation : Expectation {
     public override bool IsOptional() {return false;}
     public override bool IsEmpty() {return false;}
     protected override string _GetHelp() {
-        return "<"+String.Join(" | ", options)+">";
+        return "<"+ string.Join(" | ", options)+">";
     }
 
     public CmdUsagePart Usage(string possibility) {

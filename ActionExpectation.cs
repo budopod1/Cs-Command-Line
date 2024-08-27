@@ -1,5 +1,3 @@
-using System;
-
 public class ActionExpectation : Expectation {
     public ActionExpectation(Action action) {
         Then(action);

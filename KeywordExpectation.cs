@@ -1,5 +1,3 @@
-using System;
-
 public class KeywordExpectation(string keyword, bool isOptional = false) : Expectation {
     readonly string keyword = keyword;
     readonly bool isOptional = isOptional;

@@ -1,5 +1,3 @@
-using System;
-
 public class CmdUsagePart(string usage) : WithCmdUsage {
     readonly string usage = usage;
 
