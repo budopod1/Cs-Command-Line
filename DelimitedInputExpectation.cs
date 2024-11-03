@@ -1,3 +1,4 @@
+namespace CsCommandLine;
 public class DelimitedInputExpectation : Expectation {
     public List<string> MatchedSegments = [];
     public override string Matched {

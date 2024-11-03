@@ -1,3 +1,4 @@
+namespace CsCommandLine;
 public class PossibilitiesExpectation : Expectation {
     readonly string default_;
     readonly List<string> options;

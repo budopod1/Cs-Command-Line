@@ -1,3 +1,4 @@
+namespace CsCommandLine;
 public abstract class Expectation : WithCmdUsage {
     public virtual string Matched { get; set; }
     public bool IsPresent = false;

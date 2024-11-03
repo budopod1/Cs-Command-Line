@@ -1,5 +1,7 @@
+using CsJSONTools;
 using System.Text;
 
+namespace CsCommandLine;
 public class ArgumentParser {
     readonly string cmdName;
     readonly string description;

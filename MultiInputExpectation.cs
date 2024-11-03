@@ -1,3 +1,4 @@
+namespace CsCommandLine;
 public class MultiInputExpectation : Expectation {
     public List<string> MatchedSegments = [];
     public override string Matched {

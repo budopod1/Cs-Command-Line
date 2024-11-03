@@ -1,3 +1,4 @@
+namespace CsCommandLine;
 public class ActionExpectation : Expectation {
     public ActionExpectation(Action action) {
         Then(action);
